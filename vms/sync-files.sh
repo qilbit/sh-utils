@@ -16,14 +16,6 @@
 #
 # Author:           Rafael Mendes <rafaelmendes.dev@gmail.com>
 
-#######################################
-# Synchronizes files between host and VM.
-# Globals:
-#   None
-# Outputs:
-#  Installation status of the package.
-#######################################
-
 DIR_SYNC_FILES="/tmp/sync-files"
 
 # The /tmp/sync-files directory must be configured in the 'tmp' directory
