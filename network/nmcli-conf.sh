@@ -126,38 +126,48 @@ function add_con() {
   nmcli con show
 }
 
+#######################################
+# Delete an existing connection.
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#  A deleted connection.
+#######################################
 function del_con() {
     local number_of_con=$(nmcli -g NAME con | wc -l)
     local con_name
 
-    # Se o número de conexões for igual a zero, encerra o script com exit code 0.
+    # If the number of connections is equal to zero, terminate the script with
+    # exit code 0.
     if [ "$number_of_con" -eq 0 ]; then
         echo "Não há conexão(ões). Saindo..."; sleep 0.5
 	exit 0
     else
-        # Exibe uma lista, numerada, de nomes de conexões existentes.
+        # Displays a numbered list of existing connection names.
         echo "Conexões existentes."
         for number_con in $(seq "$number_of_con"); do
 	    echo "  $number_con - $(nmcli -g NAME con \
 		    | tr "\n" ":" \
 		    | cut -d ":" -f $number_con)"
 
-            # Quando a variável number_con se torna igual ao valor máximo (número de
-	    # conexões existentes), significa que a lista de conexões já
-	    # é conhecida, assim é possível escolher a conexão a partir do
-	    # número associado (exibindo a opção de escolha da interface).
+      # When the variable number_con becomes equal to the maximum value (number
+      # of existing connections), it means that the list of connections is
+      # already known, so it is possible to choose the connection from the
+      # associated number (showing the option to choose the interface).
 	    if [ $number_con -eq "$number_of_con" ]; then
 	        echo ""
 	        read -p "Escolha 1-$number_of_con [1]: " con_name
 	        for number_con in $(seq "$number_of_con"); do
-		    # Apaga a conexão associada ao número escolhido.
+		          # Deletes the connection associated with the chosen number.
 	            if [ "$con_name" == "$number_con" ]; then
 		        con_name=$(nmcli -g NAME con \
 				| tr "\n" ":" \
 				| cut -d ":" -f $number_con)
 			echo "Apagando..."
 			nmcli con del "$con_name"
-		    # Apaga todas as conexões existentes.
+		    # Deletes all existing connections.
 		    elif [ "$con_name" == "all" ]; then
 		        for number_con in $(seq "$number_of_con"); do
 		            con_name=$(nmcli -g NAME con \
@@ -165,8 +175,8 @@ function del_con() {
 			    echo "Apagando..."
 			    nmcli con del "$con_name"
 		        done
-		    # Por padrão apaga a conexão de número 1 da lista,
-		    # caso nenhuma seja selecionada.
+		    # By default, it deletes connection number 1 from the list, if none is
+        # selected.
 		    elif [ "$con_name" == "" ]; then
 		        con_name=$(nmcli -g NAME con \
 				| tr "\n" ":" \
@@ -179,11 +189,20 @@ function del_con() {
         done
     fi
 
-    # Exibe as conexões.
+    # Displays connections.
     sleep 0.5
     nmcli con show
 }
 
+#######################################
+# Displays messages about the installation status of nmcli.
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#  nmcli installation status.
+#######################################
 function msg_nm_installed() {
   echo -e "\nThe \"network-manager\" package is not installed."
   echo -e "The script requires the \"nmcli\" command-line tool.\n"
